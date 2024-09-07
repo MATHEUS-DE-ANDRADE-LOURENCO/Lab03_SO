@@ -7,7 +7,9 @@
 int main() {
     int pid = fork();
 
-    if(pid == 0) {
+    if (pid < 0) { 
+        printf("\nHouve um erro na criação do processo.\n");
+    } else if(pid == 0) {
         printf("\nProcesso filho:\n PID = %d;\n PPID = %d", getpid(), getppid());
         execl("/bin/ls", "ls", "-la", 0);
         printf("\nProcesso filho encerrado.");

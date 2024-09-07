@@ -7,6 +7,6 @@ int main() {
     int pid = fork();
 
     if (pid < 0) printf("Houve um erro na criação do processo.");
-    if (pid == 0) printf("\nPROCESSO FILHO: pid = %d; pai = %d", getpid(), getppid());
+    if (pid == 0) printf("\nPROCESSO FILHO: pid = %d; pai = %d\n", getpid(), getppid());
     else printf("\nPROCESSO PAI: pid = %d; pai = %d", getpid(), getppid());
 }

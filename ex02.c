@@ -1,19 +1,33 @@
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/types.h>
-# include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 int main() {
-    int pid = fork();
+    pid_t pid = fork();
 
-    if (pid < 0) printf("\nHouve um erro na criação do processo.");
-    if (pid == 0){
-        printf("\nPROCESSO FILHO: pid = %d; pai = %d", getpid(), getppid());
-        printf("\nFIM DO PROCESSO FILHO");
+    if (pid < 0) {
+        fprintf(stderr, "Erro ao criar o processo filho\n");
+        exit(1);
     }
-    else {
-        printf("\nPROCESSO PAI: pid = %d; pai = %d", getpid(), getppid());
-        sleep(1);
-        printf("\nFIM DO PROCESSO PAI");
-    } 
+
+    if (pid > 0) {
+        // Processo pai
+        printf("Processo pai - PID: %d\n", getpid());
+        printf("Processo filho - PID: %d\n", pid);
+        
+        int status;
+        wait(&status);
+        printf("O processo filho terminou\n");
+    } else {
+        // Processo filho
+        printf("Eu sou o processo filho - PID: %d\n", getpid());
+        
+        for (int i = 0; i < 5; i++) {
+            printf("Mensagem do filho: %d\n", i + 1);
+            sleep(1);
+        }
+    }
+
+    return 0;
 }

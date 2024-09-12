@@ -1,21 +1,35 @@
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 int main() {
-    int pid = fork();
+    pid_t pid = fork();
 
-    if (pid < 0) { 
-        printf("\nHouve um erro na criação do processo.\n");
-    } else if(pid == 0) {
-        printf("\nProcesso filho:\n PID = %d;\n PPID = %d", getpid(), getppid());
-        execl("/bin/ls", "ls", "-la", 0);
-        printf("\nProcesso filho encerrado.");
-    } else {
-        printf("\nProcesso pai:\n PID = %d;\n PPID = %d", getpid(), getppid());
-        sleep(1);
-        printf("\nProcesso filho encerrado.");
+    if (pid < 0) {
+        fprintf(stderr, "Erro ao criar o processo filho\n");
+        exit(1);
     }
+
+    if (pid > 0) {
+        // Processo pai
+        printf("Processo pai - PID: %d\n", getpid());
+        printf("Processo filho - PID: %d\n", pid);
+        
+        int status;
+        wait(&status);
+        printf("O processo filho terminou\n");
+    } else {
+        // Processo filho
+        printf("Eu sou o processo filho - PID: %d\n", getpid());
+        
+        // Executar o comando 'ls' usando execlp()
+        execlp("ls", "ls", "-l", NULL);
+        
+        // Se execlp falhar
+        perror("execlp");
+        exit(1);
+    }
+
+    return 0;
 }
